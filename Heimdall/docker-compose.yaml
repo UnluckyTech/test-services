@@ -8,6 +8,8 @@ services:
       - TZ=America/New_York
     volumes:
       - /srv/docker/heimdall/config:/config
+    ports:
+      - "8011:80"  # Access locally on port 8011
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -15,7 +17,3 @@ services:
       - "traefik.http.routers.heimdall.entrypoints=websecure"
       - "traefik.http.routers.heimdall.tls=true"
       - "traefik.http.routers.heimdall.tls.certresolver=le"
-      - "traefik.http.routers.heimdall-http.rule=Host(`dashboard.yourdomain.com`)"
-      - "traefik.http.routers.heimdall-http.entrypoints=web"
-      - "traefik.http.routers.heimdall-http.middlewares=https-redirect"
-      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
