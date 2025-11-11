@@ -1,0 +1,30 @@
+services:
+  youtrack:
+    image: jetbrains/youtrack:latest
+    container_name: youtrack
+    environment:
+      - YOUTRACK_HOME=/data
+      - YOUTRACK_HTTP_PORT=8080      # internal container port, optional if you want to change
+      - TZ=America/New_York          # change to your timezone
+      # Optional admin account (set on first start, can skip if using setup wizard)
+      #- YOUTRACK_ADMIN_USERNAME=admin
+      #- YOUTRACK_ADMIN_PASSWORD=yourpassword
+      #- YOUTRACK_ADMIN_EMAIL=admin@yourdomain.com
+    volumes:
+      - /srv/docker/youtrack/data:/data
+      - /srv/docker/youtrack/logs:/opt/youtrack/logs
+    ports:
+      - "8110:8080"  # Access locally via http://server-ip:8110
+    restart: unless-stopped
+    labels:
+      # Traefik routing for Dokploy / subdomain
+      - "traefik.enable=true"
+      - "traefik.http.routers.youtrack.rule=Host(`youtrack.yourdomain.com`)"
+      - "traefik.http.routers.youtrack.entrypoints=websecure"
+      - "traefik.http.routers.youtrack.tls=true"
+      - "traefik.http.routers.youtrack.tls.certresolver=le"
+      # Optional: redirect HTTP to HTTPS
+      - "traefik.http.routers.youtrack-http.rule=Host(`youtrack.yourdomain.com`)"
+      - "traefik.http.routers.youtrack-http.entrypoints=web"
+      - "traefik.http.routers.youtrack-http.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
