@@ -1,6 +1,6 @@
 services:
   youtrack:
-    image: jetbrains/youtrack:latest
+    image: jetbrains/youtrack
     container_name: youtrack
     environment:
       - YOUTRACK_HOME=/data
