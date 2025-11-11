@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    environment:
+      - PUID=1000            # Your host user ID
+      - PGID=1000            # Your host group ID
+      - TZ=America/New_York  # Change to your timezone
+      # Optional auth (if you want to enable basic auth)
+      #- HEIMDALL_AUTH_METHOD=basic
+      #- HEIMDALL_USER=admin
+      #- HEIMDALL_PASSWORD=yourpassword
+    volumes:
+      - /srv/docker/heimdall/config:/config
+    ports:
+      - "80"                 # Target port inside the container
+    restart: unless-stopped
+    networks:
+      - web
+
+    labels:
+      # Traefik routing for Dokploy / reverse proxy
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`dashboard.yourdomain.com`)"
+      - "traefik.http.routers.heimdall.entrypoints=websecure"
+      - "traefik.http.routers.heimdall.tls=true"
+      - "traefik.http.routers.heimdall.tls.certresolver=le"  # Let's Encrypt
+      # Optional: redirect HTTP to HTTPS
+      - "traefik.http.routers.heimdall-http.rule=Host(`dashboard.yourdomain.com`)"
+      - "traefik.http.routers.heimdall-http.entrypoints=web"
+      - "traefik.http.routers.heimdall-http.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+
+networks:
+  web:
+    external: true   # Dokploy usually has a 'web' network for Traefik
