@@ -14,12 +14,12 @@ services:
       - /srv/docker/youtrack/data:/data
       - /srv/docker/youtrack/logs:/opt/youtrack/logs
     ports:
-      - "8110:8080"  # Access locally via http://server-ip:8110
+      - "8110:8080"
     restart: unless-stopped
     labels:
       # Traefik routing for Dokploy / subdomain
       - "traefik.enable=true"
-      - "traefik.http.routers.youtrack.rule=Host(`youtrack.yourdomain.com`)"
+      - "traefik.http.routers.youtrack.rule=Host(`tasks.ebirdtech.com`)"
       - "traefik.http.routers.youtrack.entrypoints=websecure"
       - "traefik.http.routers.youtrack.tls=true"
       - "traefik.http.routers.youtrack.tls.certresolver=le"

@@ -9,11 +9,11 @@ services:
     volumes:
       - /srv/docker/heimdall/config:/config
     ports:
-      - "8011:80"  # Access locally on port 8011
+      - "8011:80" 
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.rule=Host(`dashboard.yourdomain.com`)"
+      - "traefik.http.routers.heimdall.rule=Host(`dash.ebirdtech.com`)"
       - "traefik.http.routers.heimdall.entrypoints=websecure"
       - "traefik.http.routers.heimdall.tls=true"
       - "traefik.http.routers.heimdall.tls.certresolver=le"
